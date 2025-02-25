@@ -3,12 +3,12 @@
     "https": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7195;http://localhost:5011"
+      "applicationUrl": "https://localhost:7195"
     },
     "IIS Express": {
       "commandName": "IISExpress",
