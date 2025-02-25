@@ -92,9 +92,18 @@ namespace Safesfir.Data
 
         [BsonElement("Memo")]
         public string Memo { get; set; }
+        [BsonElement("ShipDate")]
+        public string ShipDate { get; set; }
 
         [BsonElement("IsPaid")]
         public bool? IsPaid { get; set; }
+        [BsonElement("BillAddress")]
+        public InvoiceAddress BillAddress { get; set; }
+
+        [BsonElement("ShipAddress")]
+        public InvoiceAddress ShipAddress { get; set; }
+        [BsonElement("TermsRef")]
+        public TermsRef TermsRef { get; set; }
 
         [BsonElement("LinkedTxn")]
         [JsonConverter(typeof(SingleValueArrayConverter<LinkedTxn>))]
@@ -107,6 +116,34 @@ namespace Safesfir.Data
         [BsonElement("DataExtRet")]
         [JsonConverter(typeof(SingleValueArrayConverter<DataExtRet>))]
         public List<DataExtRet> DataExtRet { get; set; } = new List<DataExtRet>();
+    }
+    public class InvoiceAddress
+    {
+        [BsonElement("Addr1")] 
+        public string Addr1 { get; set; }
+        [BsonElement("Addr2")] 
+        public string Addr2 { get; set; }
+        [BsonElement("Addr3")] 
+        public string Addr3 { get; set; }
+        [BsonElement("Addr4")] 
+        public string Addr4 { get; set; }
+        [BsonElement("Addr5")] 
+        public string Addr5 { get; set; }
+        [BsonElement("City")] 
+        public string City { get; set; }
+        [BsonElement("State")] 
+        public string State { get; set; }
+        [BsonElement("PostalCode")] 
+        public string PostalCode { get; set; }
+        [BsonElement("Country")] 
+        public string Country { get; set; }
+        [BsonElement("Note")] 
+        public string Note { get; set; }
+    }
+    public class TermsRef
+    {
+        public string ListID { get; set; }
+        public string FullName { get; set; }
     }
     public class DataExtRet
     {

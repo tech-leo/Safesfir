@@ -31,14 +31,34 @@ namespace QBWCService
                 var user = await mongodbService.GetUserByIdAsync(userid);
                 var invoice= user.Invoices.FirstOrDefault(o => o.TxnID == id);
                 var invoiceDb= new InvoiceDB();
-                var model = new InvoiceModel { CustomerName = invoice.CustomerRef.FullName, DueDate = !string.IsNullOrEmpty(invoice.DueDate)?DateTime.Parse(invoice.DueDate):null,
-                    InvoiceDate = invoice.TxnDate ?? DateTime.UtcNow, InvoiceNumber = invoice.RefNumber
+                var model = new InvoiceModel {
+                    CustomerName = invoice.CustomerRef.FullName,
+                    CompanyName = user.QuickBooksCompany?.CompanyName,
+                    CompanyAddressLine1 = user.QuickBooksCompany.Address.Addr1,
+                    CompanyCountry = user.QuickBooksCompany.Address.Country,
+                    CustomerBillingAddressLine1 = invoice.BillAddress?.Addr1,
+                    CustomerBillingAddressLine2 = invoice.BillAddress?.Addr2,
+                    CustomerBillingCity = invoice.BillAddress?.City,
+                    CustomerBillingCountry = invoice.BillAddress?.Country,
+                    CustomerShippingCity = invoice.ShipAddress?.City,
+                    CustomerShippingAddressLine1 = invoice.ShipAddress?.Addr1,
+                    CustomerShippingAddressLine2 = invoice.ShipAddress?.Addr2,
+                    CustomerShippingCountry = invoice.ShipAddress?.Country,
+                    Memo = invoice.Memo,
+                    Terms = invoice.TermsRef?.FullName,
+                    Via = invoice.DataExtRet.FirstOrDefault(p => p.DataExtName.ToLower() == "via")?.DataExtValue,
+                    ShipDate = invoice.ShipDate,
+                    
+                    DueDate = !string.IsNullOrEmpty(invoice.DueDate)?DateTime.Parse(invoice.DueDate):null,
+                    InvoiceDate = invoice.TxnDate ?? DateTime.UtcNow, 
+                    InvoiceNumber = invoice.RefNumber
                 };
                 model.Items=new List<InvoiceItem>();
                 foreach (var item in invoice.InvoiceLineRet)
                 {
                     model.Items.Add(new InvoiceItem
                     {
+                        Name=item.ItemRef?.FullName,
                         Description = item.Desc,
                         Quantity = item.Quantity ?? 1,
                         Rate = item.Rate ?? 0,
@@ -64,7 +84,7 @@ namespace QBWCService
                 });
                 
                 builder.AddService<QBWebService>()
-                       .AddServiceEndpoint<QBWebService, IQBWebService>(new BasicHttpBinding()
+                       .AddServiceEndpoint<QBWebService, IQBWebService>(new BasicHttpBinding(BasicHttpSecurityMode.Transport )
                        {
                            MaxReceivedMessageSize = 1004857600,  // 100 MB
                            MaxBufferSize = 1004857600,
@@ -76,8 +96,8 @@ namespace QBWCService
                            }
                        }, "/QBWebService.svc");
                 var serviceMetadata = app.Services.GetRequiredService<ServiceMetadataBehavior>();
-                serviceMetadata.HttpGetEnabled = true;
-                serviceMetadata.HttpsGetEnabled = false;  // Disable HTTP WSDL
+                serviceMetadata.HttpsGetEnabled = true;
+                serviceMetadata.HttpGetEnabled = false;  // Disable HTTP WSDL
 
                 serviceMetadata.HttpsGetUrl = new Uri(baseAddress + "/QBWebService.svc?wsdl");
             });

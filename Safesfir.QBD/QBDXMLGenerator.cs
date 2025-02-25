@@ -133,12 +133,11 @@ namespace Safesfir.QBD
                 ("IncludeRetElement","IsPending"),
                 ("IncludeRetElement","PONumber"),
                 ("IncludeRetElement","TermsRef"),
-                ("IncludeRetElement","SalesRepRef"),
                 ("IncludeRetElement","IsPaid"),
                 ("IncludeRetElement","CustomerMsgRef"),
                 ("IncludeRetElement","IsTaxIncluded"),
                 ("IncludeRetElement","LinkedTxn"),
-                ("IncludeRetElement","LinkedTxn"),
+                ("IncludeRetElement","DueDate"),
                 ("OwnerID","0"),
                 };
                     if (Node?.Contains("InvoiceQueryRq") == true)
