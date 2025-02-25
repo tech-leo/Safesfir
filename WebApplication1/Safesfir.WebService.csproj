@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Safesfir.QBD\Safesfir.QBD.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="QBO\" />
+  </ItemGroup>
+
 </Project>
