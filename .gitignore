@@ -1,8 +1,8 @@
-﻿/Properties/PublishProfiles
-/obj
-/bin
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
 /Safesfir.Data/bin
-/.vs
 /Safesfir.Data/obj
 /Safesfir.QBD/bin
 /Safesfir.QBD/obj

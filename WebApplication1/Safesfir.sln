@@ -5,9 +5,9 @@ VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Safesfir.WebService", "Safesfir.WebService.csproj", "{D600C2C9-D35E-4B4A-B3A8-14310FBD2AA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Safesfir.Data", "Safesfir.Data\Safesfir.Data.csproj", "{92412B61-9FCC-4767-8E3D-333F68FBC568}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Safesfir.Data", "..\Safesfir.Data\Safesfir.Data.csproj", "{92412B61-9FCC-4767-8E3D-333F68FBC568}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Safesfir.QBD", "Safesfir.QBD\Safesfir.QBD.csproj", "{38FE8092-9863-4A12-8DB5-FE42334C6043}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Safesfir.QBD", "..\Safesfir.QBD\Safesfir.QBD.csproj", "{38FE8092-9863-4A12-8DB5-FE42334C6043}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
