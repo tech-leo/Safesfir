@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CoreWCF.Http" Version="1.7.0" />
+    <PackageReference Include="CoreWCF.Primitives" Version="1.7.0" />
+    <PackageReference Include="System.ServiceModel.Http" Version="8.1.1" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="8.1.1" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="8.1.1" />
+    <PackageReference Include="System.ServiceModel.Web" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Safesfir.Data\Safesfir.Data.csproj" />
+    <ProjectReference Include="..\Safesfir.QBD\Safesfir.QBD.csproj" />
+  </ItemGroup>
+
+</Project>
