@@ -11,6 +11,10 @@ namespace QBWCService
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(80); // Listen on port 80
+            });
 
             // Add services to the container.
             builder.Services.AddAuthorization();
