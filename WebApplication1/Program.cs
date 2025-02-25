@@ -64,7 +64,7 @@ namespace QBWCService
                 });
                 
                 builder.AddService<QBWebService>()
-                       .AddServiceEndpoint<QBWebService, IQBWebService>(new BasicHttpBinding(BasicHttpSecurityMode.Transport)
+                       .AddServiceEndpoint<QBWebService, IQBWebService>(new BasicHttpBinding()
                        {
                            MaxReceivedMessageSize = 1004857600,  // 100 MB
                            MaxBufferSize = 1004857600,
@@ -76,8 +76,8 @@ namespace QBWCService
                            }
                        }, "/QBWebService.svc");
                 var serviceMetadata = app.Services.GetRequiredService<ServiceMetadataBehavior>();
-                serviceMetadata.HttpsGetEnabled = true;
-                serviceMetadata.HttpGetEnabled = false;  // Disable HTTP WSDL
+                serviceMetadata.HttpGetEnabled = true;
+                serviceMetadata.HttpsGetEnabled = false;  // Disable HTTP WSDL
 
                 serviceMetadata.HttpsGetUrl = new Uri(baseAddress + "/QBWebService.svc?wsdl");
             });
