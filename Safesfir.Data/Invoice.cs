@@ -44,6 +44,24 @@ namespace Safesfir.Data
         public string FullName { get; set; }
     }
 
+
+    public class DataExtModRs
+    {
+        [BsonElement("OwnerID")]
+        public string OwnerID { get; set; }
+
+        [BsonElement("DataExtName")]
+        public string FullName { get; set; }
+        [BsonElement("TxnDataExtType")]
+        public string TxnDataExtType { get; set; }
+        
+        [BsonElement("TxnID")]
+        public string TxnID { get; set; }
+
+        [BsonElement("DataExtValue")]
+        public string DataExtValue { get; set; }
+    }
+
     public class Invoice
     {
         [BsonId]

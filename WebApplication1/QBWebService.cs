@@ -75,19 +75,19 @@ namespace QBWCService
                 var driverInvoices = drivers.SelectMany(p => p.DriverInvoice).Select(p=> p.Id).ToList();
                 foreach (var payment in payments)
                 {
-                    if(!string.IsNullOrEmpty( payment.SignedPdfUrl) && payment.Status!="Pending" && driverInvoices.Contains(payment.InvoiceId))
+                    if(!string.IsNullOrEmpty( payment.SignedPdfUrl) && payment.QuickbooksPaymentUpdated!=true && payment.Status!="Pending" && driverInvoices.Contains(payment.InvoiceId))
                     {
                         signedPDFURL.Add((payment.InvoiceId, payment.SignedPdfUrl));
                     }
                 }
+                signedPDFURL = new List<(string, string)> { (drivers.SelectMany(p => p.DriverInvoice).FirstOrDefault().Id, "https://us-east-1.console.aws.amazon.com/") };
             }
-
             var nodes= new List<string>();
             if(signedPDFURL.Count > 0)
             {
                 nodes.Add("DataExtModRq");
             }
-            nodes.AddRange(["InvoiceQueryRq", "ReceivePaymentQueryRq"]);
+            nodes.Add("InvoiceQueryRq");
             var res = xmlGenerator.GetMultipleXmlDocument(nodes, signedPDFURL).OuterXml;
             return res;
             
@@ -113,7 +113,7 @@ namespace QBWCService
             var xmlDoc = XElement.Parse(response);
 
             var responses = new ParseQBXML<Invoice>().GetQueryRets(xmlDoc, "InvoiceRet").Select(d => ("", d)).ToList();
-            var responsePayments = new ParseQBXML<Invoice>().GetQueryRets(xmlDoc, "ReceivePaymentRet").Select(d => ("", d)).ToList();
+            var responsePayments = new ParseQBXML<DataExtRet>().GetQueryRets(xmlDoc, "DataExtRet").Select(d => ("", d)).ToList();
 
             if (responses.Count > 0)
             {
@@ -215,7 +215,14 @@ namespace QBWCService
                                     {
 
                                         var id = driver.DriverInvoice[i].uniqueId;
-
+                                        if(responsePayments.Any(p=> p.Item2.DataExtName == "SignedInvoice"&& driver.InvoicePayments.Any(mp=> mp.SignedPdfUrl ==p.Item2.DataExtValue)))
+                                        {
+                                            for (int m = 0; m < driver.InvoicePayments.Count; m++)
+                                            {
+                                               if(responsePayments.Any(p=> p.Item2.DataExtName== "SignedInvoice"&& p.Item2.DataExtValue== driver.InvoicePayments[m].SignedPdfUrl))
+                                                   driver.InvoicePayments[m].QuickbooksPaymentUpdated = true;                                                
+                                             }
+                                        }
                                         driver.DriverInvoice[i] = new DriverInvoice
                                         {
                                             Id = invoice.Item2.TxnID,

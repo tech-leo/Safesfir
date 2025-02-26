@@ -132,6 +132,10 @@ namespace Safesfir.Data
         [BsonElement("signedPdfUrl")]
         public string? SignedPdfUrl { get; set; }
 
+
+        [BsonElement("quickbooksPaymentUpdated")]
+        public bool? QuickbooksPaymentUpdated { get; set; }
+
         [BsonElement("paymentHistory")]
         public List<PaymentHistory>? PaymentHistory { get; set; } = new List<PaymentHistory>();
 

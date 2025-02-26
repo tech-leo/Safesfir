@@ -23,6 +23,7 @@ namespace QBWCService
 
             // Configure the HTTP request pipeline.
             app.MapGet("/", () => "API is running!");
+            ///generate-invoice?userid=67aa5a090c1e96f3d78c88f6&id=E-1740272847
             app.MapGet("/generate-invoice", async (string userid, string id) =>
             
             {
