@@ -23,6 +23,17 @@ namespace QBWCService
 
             // Configure the HTTP request pipeline.
             app.MapGet("/", () => "API is running!");
+///generate-invoice?userid=67aa5a090c1e96f3d78c88f6&id=45A0-1071528830
+
+//dotnet publish Safesfir.WebService.csproj
+
+//cd bin/Release/net8.0/publish/
+
+//sudo lsof -i :5000
+//sudo kill -9 78055
+
+//nohup dotnet Safesfir.WebService.dll --urls "http://0.0.0.0:5000"
+
             ///generate-invoice?userid=67aa5a090c1e96f3d78c88f6&id=E-1740272847
             app.MapGet("/clear-invoice", async () =>
             {
