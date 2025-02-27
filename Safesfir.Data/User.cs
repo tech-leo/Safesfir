@@ -40,7 +40,7 @@ namespace Safesfir.Data
         [BsonElement("QuickBooksCompany")]
         public Company? QuickBooksCompany { get; set; } = new Company();
 
-        [BsonElement("DriverInvoice")]
+        [BsonElement("DriverInvoice")]  
         public List<DriverInvoice>? DriverInvoice { get; set; } = new List<DriverInvoice>();
 
 
@@ -95,6 +95,9 @@ namespace Safesfir.Data
 
         [BsonElement("qbwdCompany")]
         public string? QbwdCompany { get; set; }
+
+        [BsonElement("qbwdError")]
+        public string? QbwdError { get; set; }
 
         [BsonElement("qbwdLastSync")]
         public DateTime? QbwdLastSync { get; set; }

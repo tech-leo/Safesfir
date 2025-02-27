@@ -24,6 +24,27 @@ namespace QBWCService
             // Configure the HTTP request pipeline.
             app.MapGet("/", () => "API is running!");
             ///generate-invoice?userid=67aa5a090c1e96f3d78c88f6&id=E-1740272847
+            app.MapGet("/clear-invoice", async () =>
+            {
+                var mongodbService = new MongoDBService();
+                var users = await mongodbService.GetUsersAsync();
+                users= users.Where(o=> o.QuickBooks.Connected==true && o.QuickBooks.Type== QuickBooksType.QBWD).ToList();
+                foreach (var user in users) { 
+                    if(user.DriverInvoice!=null) 
+                    {
+                        var ids= user.DriverInvoice.Select(o=> o.Id).ToList();
+                        user.InvoicePayments = user.InvoicePayments.Where(o => !ids.Contains(o.InvoiceId)).ToList();
+                    }
+                    user.Invoices = new List<Invoice?>();
+                    user.DriverInvoice = new List<DriverInvoice>();
+                    user.QuickBooksCompany = new Company();
+                    user.QuickBooks.Connected = false;
+                    user.QuickBooks.QbwdCompany = string.Empty;
+                    await mongodbService.UpdateUserAsync(user.Id, user);
+
+                }
+                return Results.Text($"Cleared Invoices of {users?.Count} users");
+            });
             app.MapGet("/generate-invoice", async (string userid, string id) =>
             
             {
@@ -45,7 +66,7 @@ namespace QBWCService
                     CustomerShippingAddressLine1 = invoice.ShipAddress?.Addr1,
                     CustomerShippingAddressLine2 = invoice.ShipAddress?.Addr2,
                     CustomerShippingCountry = invoice.ShipAddress?.Country,
-                    Memo = invoice.Memo,
+                    Memo = builder.Configuration["Memo"],
                     Terms = invoice.TermsRef?.FullName,
                     Via = invoice.DataExtRet.FirstOrDefault(p => p.DataExtName.ToLower() == "via")?.DataExtValue,
                     ShipDate = invoice.ShipDate,
@@ -70,12 +91,7 @@ namespace QBWCService
             });
             app.UseHttpsRedirection();
 
-            //app.UseAuthorization();
 
-            var summaries = new[]
-            {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
             var baseAddress = builder.Configuration["WCFSettings:BaseAddress"];
             app.UseServiceModel(builder =>
             {
@@ -85,7 +101,7 @@ namespace QBWCService
                 });
                 
                 builder.AddService<QBWebService>()
-                       .AddServiceEndpoint<QBWebService, IQBWebService>(new BasicHttpBinding( )
+                       .AddServiceEndpoint<QBWebService, IQBWebService>(new BasicHttpBinding()
                        {
                            MaxReceivedMessageSize = 1004857600,  // 100 MB
                            MaxBufferSize = 1004857600,
@@ -95,12 +111,12 @@ namespace QBWCService
                                MaxStringContentLength = 1004857600,
                                MaxArrayLength = 1004857600
                            }
-                       }, "/QBWebService.svc");
+                       }, "/soap");
                 var serviceMetadata = app.Services.GetRequiredService<ServiceMetadataBehavior>();
                 serviceMetadata.HttpsGetEnabled = false;
                 serviceMetadata.HttpGetEnabled = true;  // Disable HTTP WSDL
 
-                serviceMetadata.HttpsGetUrl = new Uri(baseAddress + "/QBWebService.svc?wsdl");
+                serviceMetadata.HttpsGetUrl = new Uri(baseAddress + "/soap?wsdl");
             });
 
             app.Run();

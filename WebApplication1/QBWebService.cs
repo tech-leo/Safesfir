@@ -53,7 +53,7 @@ namespace QBWCService
             if (!sessionTickets.ContainsKey(ticket)) return "";
             var user = sessionTickets[ticket];
             var xmlGenerator = new QBDXMLGenerator();
-            List<(string, string)> signedPDFURL = new List<(string, string)>(); 
+            List<(string, string)> signedPDFURL = new List<(string, string)>();
             if (user != null)
             {
                 user.QuickBooks.Connected = true;
@@ -72,37 +72,40 @@ namespace QBWCService
                 await mongodbService.UpdateUserAsync(user.Id, user);
                 var drivers = await mongodbService.GetUsersAsync();
                 var payments = drivers.SelectMany(p => p.InvoicePayments).ToList();
-                var driverInvoices = drivers.SelectMany(p => p.DriverInvoice).Select(p=> p.Id).ToList();
+                var driverInvoices = drivers.SelectMany(p => p.DriverInvoice).Select(p => p.Id).ToList();
                 foreach (var payment in payments)
                 {
-                    if(!string.IsNullOrEmpty( payment.SignedPdfUrl) && payment.QuickbooksPaymentUpdated!=true && payment.Status!="Pending" && driverInvoices.Contains(payment.InvoiceId))
+                    if (!string.IsNullOrEmpty(payment.SignedPdfUrl) && payment.QuickbooksPaymentUpdated != true && payment.Status != "Pending" && driverInvoices.Contains(payment.InvoiceId))
                     {
                         signedPDFURL.Add((payment.InvoiceId, payment.SignedPdfUrl));
                     }
                 }
-                signedPDFURL = new List<(string, string)> { (drivers.SelectMany(p => p.DriverInvoice).FirstOrDefault().Id, "https://us-east-1.console.aws.amazon.com/") };
+                //signedPDFURL = new List<(string, string)> { (drivers.SelectMany(p => p.DriverInvoice)?.FirstOrDefault()?.Id, "https://us-east-1.console.aws.amazon.com/") };
             }
-            var nodes= new List<string>();
-            if(signedPDFURL.Count > 0)
+            var nodes = new List<string>();
+            if (signedPDFURL.Count > 0)
             {
                 nodes.Add("DataExtModRq");
             }
             nodes.Add("InvoiceQueryRq");
             var res = xmlGenerator.GetMultipleXmlDocument(nodes, signedPDFURL).OuterXml;
             return res;
-            
+
         }
 
         public async Task<int> receiveResponseXML(string ticket, string response, string hresult, string message)
         {
-            if (!sessionTickets.ContainsKey(ticket)) return -1;
+            if (!sessionTickets.ContainsKey(ticket) || sessionTickets[ticket] == null) return -1;
             if (response != null && !string.IsNullOrEmpty(response))
             {
                 await ProcessInvoice(response, ticket);
-                //await ProcessPayment(response, ticket);
             }
             else
             {
+                var user = sessionTickets[ticket];
+                user.QuickBooks.QbwdError = message;
+                user.QuickBooks.QbwdLastSync = DateTime.UtcNow;
+                await mongodbService.UpdateUserAsync(user.Id, user);
 
             }
             return 100; // 100 means all data processed
@@ -113,7 +116,6 @@ namespace QBWCService
             var xmlDoc = XElement.Parse(response);
 
             var responses = new ParseQBXML<Invoice>().GetQueryRets(xmlDoc, "InvoiceRet").Select(d => ("", d)).ToList();
-            var responsePayments = new ParseQBXML<DataExtRet>().GetQueryRets(xmlDoc, "DataExtRet").Select(d => ("", d)).ToList();
 
             if (responses.Count > 0)
             {
@@ -183,13 +185,16 @@ namespace QBWCService
                             var cf = new List<CustomField>();
                             foreach (var field in invoice.Item2.DataExtRet)
                             {
-                                cf.Add(new CustomField
+                                if (field != null)
                                 {
-                                    DefinitionId = field.OwnerID,
-                                    Name = field.DataExtName,
-                                    StringValue = field.DataExtValue,
-                                    Type = field.DataExtValue
-                                });
+                                    cf.Add(new CustomField
+                                    {
+                                        DefinitionId = field.OwnerID,
+                                        Name = field.DataExtName,
+                                        StringValue = field.DataExtValue,
+                                        Type = field.DataExtType
+                                    });
+                                }
                             }
                             var status = "Unpaid";
 
@@ -215,13 +220,13 @@ namespace QBWCService
                                     {
 
                                         var id = driver.DriverInvoice[i].uniqueId;
-                                        if(responsePayments.Any(p=> p.Item2.DataExtName == "SignedInvoice"&& driver.InvoicePayments.Any(mp=> mp.SignedPdfUrl ==p.Item2.DataExtValue)))
+                                        if (invoice.Item2.DataExtRet?.Any(p => p.DataExtName == "SignedInvoice" && driver.InvoicePayments.Any(mp => invoice.Item2.TxnID == mp.InvoiceId)) == true)
                                         {
                                             for (int m = 0; m < driver.InvoicePayments.Count; m++)
                                             {
-                                               if(responsePayments.Any(p=> p.Item2.DataExtName== "SignedInvoice"&& p.Item2.DataExtValue== driver.InvoicePayments[m].SignedPdfUrl))
-                                                   driver.InvoicePayments[m].QuickbooksPaymentUpdated = true;                                                
-                                             }
+                                                if (invoice.Item2.DataExtRet?.Any(p => p.DataExtName == "SignedInvoice") == true && driver.InvoicePayments[m].InvoiceId == invoice.Item2.TxnID)
+                                                    driver.InvoicePayments[m].QuickbooksPaymentUpdated = true;
+                                            }
                                         }
                                         driver.DriverInvoice[i] = new DriverInvoice
                                         {

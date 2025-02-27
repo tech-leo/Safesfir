@@ -23,7 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="QBO\" />
+    <None Update="Images\CentexProduce.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\ProduceX.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
