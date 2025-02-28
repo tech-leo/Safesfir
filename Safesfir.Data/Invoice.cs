@@ -170,6 +170,7 @@ namespace Safesfir.Data
         public string DataExtType { get; set; }
         public string DataExtValue { get; set; }
     }
+    [BsonIgnoreExtraElements] // ✅ Ignore unexpected fields like _id
     public class DriverInvoice
     {
         [BsonId]

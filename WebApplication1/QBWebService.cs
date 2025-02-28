@@ -70,23 +70,29 @@ namespace QBWCService
                 catch
                 {
                 }
-                await mongodbService.UpdateUserAsync(user.Id, user);
-                var drivers = await mongodbService.GetUsersAsync();
-                var payments = drivers.SelectMany(p => p.InvoicePayments).ToList();
-                var driverInvoices = drivers.SelectMany(p => p.DriverInvoice).Select(p => p.Id).ToList();
                 try
                 {
-                    foreach (var payment in payments)
+                    await mongodbService.UpdateUserAsync(user.Id, user);
+                    var drivers = await mongodbService.GetDriversAsync();
+                    var payments = drivers.SelectMany(p => p.InvoicePayments).ToList();
+                    var driverInvoices = drivers.SelectMany(p => p.DriverInvoice).Select(p => p.Id).ToList();
+                    try
                     {
-                        if (!string.IsNullOrEmpty(payment.SignedPdfUrl) && driverInvoices.Contains(payment.InvoiceId))
+                        foreach (var payment in payments)
                         {
-                            var url = await new LinklyHQClient().ShortenUrlAsync(payment.SignedPdfUrl);
+                            if (!string.IsNullOrEmpty(payment.SignedPdfUrl) && driverInvoices.Contains(payment.InvoiceId))
+                            {
+                                var url = await new LinklyHQClient().ShortenUrlAsync(payment.SignedPdfUrl);
 
-                            signedPDFURL.Add((payment.InvoiceId, url));
+                                signedPDFURL.Add((payment.InvoiceId, url));
+                            }
                         }
                     }
-                }
-                catch
+                    catch
+                    {
+
+                    }
+                }catch(Exception ex)
                 {
 
                 }
