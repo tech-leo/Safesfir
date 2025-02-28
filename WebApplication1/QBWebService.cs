@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using Newtonsoft.Json;
 using Safesfir.Data;
 using Safesfir.QBD;
+using Safesfir.WebService;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -73,12 +74,21 @@ namespace QBWCService
                 var drivers = await mongodbService.GetUsersAsync();
                 var payments = drivers.SelectMany(p => p.InvoicePayments).ToList();
                 var driverInvoices = drivers.SelectMany(p => p.DriverInvoice).Select(p => p.Id).ToList();
-                foreach (var payment in payments)
+                try
                 {
-                    if (!string.IsNullOrEmpty(payment.SignedPdfUrl) && payment.QuickbooksPaymentUpdated != true && driverInvoices.Contains(payment.InvoiceId))
+                    foreach (var payment in payments)
                     {
-                        signedPDFURL.Add((payment.InvoiceId, payment.SignedPdfUrl));
+                        if (!string.IsNullOrEmpty(payment.SignedPdfUrl) && driverInvoices.Contains(payment.InvoiceId))
+                        {
+                            var url = await new LinklyHQClient().ShortenUrlAsync(payment.SignedPdfUrl);
+
+                            signedPDFURL.Add((payment.InvoiceId, url));
+                        }
                     }
+                }
+                catch
+                {
+
                 }
                 //signedPDFURL = new List<(string, string)> { (drivers.SelectMany(p => p.DriverInvoice)?.FirstOrDefault()?.Id, "https://us-east-1.console.aws.amazon.com/") };
             }
