@@ -253,6 +253,7 @@ namespace QBWCService
                                             Id = invoice.Item2.TxnID,
                                             DocNumber = invoice.Item2.RefNumber,
                                             domain = "QBD",
+                                            CustmerRef=new CustmerRef { name= invoice.Item2.CustomerRef?.FullName,value= invoice.Item2?.CustomerRef?.ListID},
                                             DueDate = invoice.Item2.DueDate,
                                             paymentDetails = driver.DriverInvoice[i].paymentDetails,
                                             TxnDate = invoice.Item2.TxnDate.ToString(),

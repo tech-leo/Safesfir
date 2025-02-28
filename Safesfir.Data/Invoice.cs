@@ -207,8 +207,15 @@ namespace Safesfir.Data
 
         [BsonElement("paymentDetails")]
         public InvoicePayment? paymentDetails { get; set; }
+        [BsonElement("CustmerRef")]
+        public CustmerRef? CustmerRef { get; set; }
 
 
+    }
+    public class CustmerRef
+    {
+        public string name { get; set; }
+        public string value { get; set; }
     }
     public class CustomField
     {
