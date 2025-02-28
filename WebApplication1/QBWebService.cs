@@ -75,7 +75,7 @@ namespace QBWCService
                 var driverInvoices = drivers.SelectMany(p => p.DriverInvoice).Select(p => p.Id).ToList();
                 foreach (var payment in payments)
                 {
-                    if (!string.IsNullOrEmpty(payment.SignedPdfUrl) && payment.QuickbooksPaymentUpdated != true && payment.Status != "Pending" && driverInvoices.Contains(payment.InvoiceId))
+                    if (!string.IsNullOrEmpty(payment.SignedPdfUrl) && payment.QuickbooksPaymentUpdated != true && driverInvoices.Contains(payment.InvoiceId))
                     {
                         signedPDFURL.Add((payment.InvoiceId, payment.SignedPdfUrl));
                     }
