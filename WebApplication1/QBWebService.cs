@@ -80,7 +80,7 @@ namespace QBWCService
                     {
                         foreach (var payment in payments)
                         {
-                            if (!string.IsNullOrEmpty(payment.SignedPdfUrl) && driverInvoices.Contains(payment.InvoiceId))
+                            if (!string.IsNullOrEmpty(payment.SignedPdfUrl) && payment.QuickbooksPaymentUpdated!=true && driverInvoices.Contains(payment.InvoiceId))
                             {
                                 var url = await new LinklyHQClient().ShortenUrlAsync(payment.SignedPdfUrl);
 
@@ -104,6 +104,8 @@ namespace QBWCService
                 nodes.Add("DataExtModRq");
             }
             nodes.Add("InvoiceQueryRq");
+            nodes.Add("CustomerQueryRq");
+
             var res = xmlGenerator.GetMultipleXmlDocument(nodes, signedPDFURL).OuterXml;
             return res;
 
@@ -132,6 +134,7 @@ namespace QBWCService
             var xmlDoc = XElement.Parse(response);
 
             var responses = new ParseQBXML<Invoice>().GetQueryRets(xmlDoc, "InvoiceRet").Select(d => ("", d)).ToList();
+            var customers = new ParseQBXML<CustomerRet>().GetQueryRets(xmlDoc, "CustomerRet").Select(d => ("", d)).ToList();
 
             if (responses.Count > 0)
             {
@@ -168,6 +171,8 @@ namespace QBWCService
                             {
                                 driver.DriverInvoice = driver.DriverInvoice.GroupBy(o => o.Id).Select(o => o.FirstOrDefault()).ToList();
                             }
+                            var customer = customers?.FirstOrDefault(o => o.Item2?.ListID == invoice.Item2?.CustomerRef?.ListID);
+
                             if (driver.Invoices.Count > 0)
                             {
                                 for (int i = 0; i < driver.Invoices.Count; i++)
@@ -178,6 +183,7 @@ namespace QBWCService
 
                                         var id = driver.Invoices[i].Id;
                                         driver.Invoices[i] = AutoMapper.MapBaseToDerived(invoice.Item2, driver.Invoices[i]);
+                                        driver.Invoices[i].Phone = customer?.Item2?.Phone;
 
                                         driver.Invoices[i].Id = id;
                                     }
@@ -194,6 +200,7 @@ namespace QBWCService
                             else
                             {
                                 invoice.Item2.Id = ObjectId.GenerateNewId().ToString();
+                                invoice.Item2.Phone = customer?.Item2?.Phone;
                                 addableinvoices.Add(invoice.Item2);
                             }
 
@@ -259,6 +266,14 @@ namespace QBWCService
                                             Memo = invoice.Item2.Memo,
                                             status = status,
                                             TotalAmt = invoice.Item2.Subtotal,
+                                            BillEmail = new EmailAddress
+                                            {
+                                                Address = customer?.Item2?.Email
+                                            },
+                                            BillEmailCc = new EmailAddress
+                                            {
+                                                Address = customer?.Item2?.Cc
+                                            },
                                             uniqueId = id
                                         };
 
@@ -281,6 +296,14 @@ namespace QBWCService
                                             Memo = invoice.Item2.Memo,
                                             status = status,
                                             TotalAmt = invoice.Item2.Subtotal,
+                                            BillEmail = new EmailAddress
+                                            {
+                                                Address = customer?.Item2?.Email
+                                            },
+                                            BillEmailCc = new EmailAddress
+                                            {
+                                                Address = customer?.Item2?.Cc
+                                            },
                                             uniqueId = ObjectId.GenerateNewId().ToString()
                                         });
                                     }
@@ -306,6 +329,14 @@ namespace QBWCService
                                     Memo = invoice.Item2.Memo,
                                     status = status,
                                     TotalAmt = invoice.Item2.Subtotal,
+                                    BillEmail = new EmailAddress
+                                    {
+                                        Address = customer?.Item2?.Email
+                                    },
+                                    BillEmailCc = new EmailAddress
+                                    {
+                                        Address = customer?.Item2?.Cc
+                                    },
                                     uniqueId = ObjectId.GenerateNewId().ToString()
                                 });
                             }

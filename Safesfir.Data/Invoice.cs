@@ -110,6 +110,11 @@ namespace Safesfir.Data
 
         [BsonElement("Memo")]
         public string Memo { get; set; }
+
+        [BsonElement("Phone")]
+        public string Phone { get; set; }
+
+
         [BsonElement("ShipDate")]
         public string ShipDate { get; set; }
 
@@ -134,6 +139,15 @@ namespace Safesfir.Data
         [BsonElement("DataExtRet")]
         [JsonConverter(typeof(SingleValueArrayConverter<DataExtRet>))]
         public List<DataExtRet> DataExtRet { get; set; } = new List<DataExtRet>();
+    }
+
+
+    public class CustomerRet
+    {
+        public string ListID { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+        public string Cc { get; set; }
     }
     public class InvoiceAddress
     {
@@ -212,8 +226,19 @@ namespace Safesfir.Data
         public CustmerRef? CustomerRef { get; set; }
         [BsonElement("Terms")]
         public string? Terms { get; set; }
+        [BsonElement("BillEmail")]
+        public EmailAddress? BillEmail { get; set; }
 
 
+        [BsonElement("BillEmailCc")]
+        public EmailAddress? BillEmailCc { get; set; }
+
+
+    }
+    public class EmailAddress
+    {
+        [BsonElement("Address")]
+        public string Address { get; set; }
 
     }
     public class CustmerRef

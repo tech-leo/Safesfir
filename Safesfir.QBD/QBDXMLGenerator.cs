@@ -121,6 +121,24 @@ namespace Safesfir.QBD
                             custAddRq.AppendChild(cust1AddRqChild);
                         }
                     }
+
+                    List<(string, string)> customerrets = new() {
+                ("IncludeRetElement","ListID"),
+                ("IncludeRetElement","Email"),
+                ("IncludeRetElement","Cc"),
+                ("IncludeRetElement","Phone"),
+                ("OwnerID","0"),
+                };
+
+                    if (Node?.Contains("CustomerQueryRq") == true)
+                    {
+                        foreach (var item in customerrets)
+                        {
+                            XmlElement cust1AddRqChild = inputXMLDoc.CreateElement(item.Item1);
+                            cust1AddRqChild.InnerText = item.Item2;
+                            custAddRq.AppendChild(cust1AddRqChild);
+                        }
+                    }
                 }
             }
 
