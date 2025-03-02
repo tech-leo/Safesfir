@@ -3,6 +3,7 @@ using CoreWCF.Channels;
 using CoreWCF.Configuration;
 using CoreWCF.Description;
 using Safesfir.Data;
+using Safesfir.WebService;
 
 namespace QBWCService
 {
@@ -62,9 +63,16 @@ namespace QBWCService
 
                 var mongodbService = new MongoDBService();
                 var user = await mongodbService.GetUserByIdAsync(userid);
-                var invoice= user.Invoices.FirstOrDefault(o => o.TxnID == id);
-                var invoiceDb= new InvoiceDB();
-                var model = new InvoiceModel {
+                if (user?.Role?.ToLower() != "driver") { 
+                        var users = await mongodbService.GetDriversAsync();
+                    user = users.Where(p=> p.DriverInvoice.Any(o => o.Id == id)).FirstOrDefault();
+                }
+                if (user != null)
+                {
+                    var invoice = user.Invoices.FirstOrDefault(o => o.TxnID == id);
+                    var invoiceDb = new InvoiceDB();
+                    var model = new InvoiceModel
+                    {
                     CustomerName = invoice.CustomerRef.FullName,
                     CompanyName = user.QuickBooksCompany?.CompanyName,
                     CompanyAddressLine1 = user.QuickBooksCompany.Address.Addr1,
@@ -82,23 +90,26 @@ namespace QBWCService
                     Via = invoice.DataExtRet.FirstOrDefault(p => p.DataExtName.ToLower() == "via")?.DataExtValue,
                     ShipDate = invoice.ShipDate,
                     
-                    DueDate = !string.IsNullOrEmpty(invoice.DueDate)?DateTime.Parse(invoice.DueDate):null,
+                        DueDate = !string.IsNullOrEmpty(invoice.DueDate) ? DateTime.Parse(invoice.DueDate) : null,
                     InvoiceDate = invoice.TxnDate ?? DateTime.UtcNow, 
                     InvoiceNumber = invoice.RefNumber
                 };
-                model.Items=new List<InvoiceItem>();
+                    model.Items = new List<InvoiceItem>();
                 foreach (var item in invoice.InvoiceLineRet)
                 {
                     model.Items.Add(new InvoiceItem
                     {
-                        Name=item.ItemRef?.FullName,
+                            Name = item.ItemRef?.FullName,
                         Description = item.Desc,
                         Quantity = item.Quantity ?? 1,
                         Rate = item.Rate ?? 0,
                     });
                 }
-                var pdfBytes= invoiceDb.GenerateInvoicePdf(model);
+                    var pdfBytes = invoiceDb.GenerateInvoicePdf(model);
                 return Results.File(pdfBytes, "application/pdf", $"Invoice_{id}.pdf");
+                }
+                return Results.Text($"User not found");
+
             });
             app.UseHttpsRedirection();
 
