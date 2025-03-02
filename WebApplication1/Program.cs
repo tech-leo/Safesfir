@@ -87,7 +87,7 @@ namespace QBWCService
                     CustomerShippingCountry = invoice.ShipAddress?.Country,
                     Memo = builder.Configuration["Memo"],
                     Terms = invoice.TermsRef?.FullName,
-                    Via = invoice.DataExtRet.FirstOrDefault(p => p.DataExtName.ToLower() == "via")?.DataExtValue,
+                        Via = invoice.ShipMethodRef?.FullName,
                     ShipDate = invoice.ShipDate,
                     
                         DueDate = !string.IsNullOrEmpty(invoice.DueDate) ? DateTime.Parse(invoice.DueDate) : null,
