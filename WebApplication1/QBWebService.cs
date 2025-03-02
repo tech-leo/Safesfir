@@ -143,11 +143,11 @@ namespace QBWCService
             if (responses.Count > 0)
             {
 
-                foreach (var invoice in responses.Where(o => o.Item2 != null && o.Item2?.DataExtRet?.Any(p => p.DataExtName?.ToUpper() == "VIA") == true))
+                foreach (var invoice in responses.Where(o => o.Item2 != null && !string.IsNullOrEmpty( o.Item2?.ShipMethodRef?.FullName)))
                 {
                     if (invoice.Item2 != null)
                     {
-                        string name = invoice.Item2.DataExtRet?.FirstOrDefault(o => o.DataExtName?.ToUpper() == "VIA")?.DataExtValue;
+                        string name = invoice.Item2?.ShipMethodRef?.FullName;
                         var driver = await mongodbService.GetDriverByNameAsync(name);
                         var addableinvoices = new List<Invoice>();
                         var addableDriverInvoices = new List<DriverInvoice>();
@@ -165,7 +165,7 @@ namespace QBWCService
                             }
                             else
                             {
-                                driver.Invoices = driver.Invoices.GroupBy(o => o.TxnID).Select(o => o.FirstOrDefault(o => o?.DataExtRet?.Any(p => p.DataExtName?.ToUpper() == "VIA") == true)).ToList();
+                                driver.Invoices = driver.Invoices.GroupBy(o => o.TxnID).Select(o => o.FirstOrDefault()).ToList();
                             }
                             if (driver.DriverInvoice == null)
                             {

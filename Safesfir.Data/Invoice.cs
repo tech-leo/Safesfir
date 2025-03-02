@@ -125,6 +125,9 @@ namespace Safesfir.Data
 
         [BsonElement("ShipAddress")]
         public InvoiceAddress ShipAddress { get; set; }
+
+        [BsonElement("ShipMethodRef")]
+        public ShipMethodRef ShipMethodRef { get; set; }
         [BsonElement("TermsRef")]
         public TermsRef TermsRef { get; set; }
 
@@ -141,7 +144,11 @@ namespace Safesfir.Data
         public List<DataExtRet> DataExtRet { get; set; } = new List<DataExtRet>();
     }
 
-
+    public class ShipMethodRef
+    {
+        public string ListID { get; set; }
+        public string FullName { get; set; }
+    }
     public class CustomerRet
     {
         public string ListID { get; set; }

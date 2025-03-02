@@ -110,6 +110,7 @@ namespace Safesfir.QBD
                 ("IncludeRetElement","SalesTaxTotal"),
                 ("IncludeRetElement","ItemSalesTaxRef"),
                 ("IncludeRetElement","Memo"),
+                ("IncludeRetElement","ShipMethodRef"),
                 ("OwnerID","0"),
                 };
                     if (Node?.Contains("InvoiceQueryRq") == true)
