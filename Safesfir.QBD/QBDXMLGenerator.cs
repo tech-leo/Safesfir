@@ -114,6 +114,16 @@ namespace Safesfir.QBD
                 };
                     if (Node?.Contains("InvoiceQueryRq") == true)
                     {
+                        XmlElement mdateAddRqChild = inputXMLDoc.CreateElement("ModifiedDateRangeFilter");
+                        XmlElement startdateAddRqChild = inputXMLDoc.CreateElement("FromModifiedDate");
+                        startdateAddRqChild.InnerText = "2025-01-13";
+                        mdateAddRqChild.AppendChild(startdateAddRqChild);
+                        XmlElement enddateAddRqChild = inputXMLDoc.CreateElement("ToModifiedDate");
+                        enddateAddRqChild.InnerText = "2026-02-13";
+                        mdateAddRqChild.AppendChild(enddateAddRqChild);
+
+                        custAddRq.AppendChild(mdateAddRqChild);
+
                         foreach (var item in invoicerets)
                         {
                             XmlElement cust1AddRqChild = inputXMLDoc.CreateElement(item.Item1);
@@ -123,6 +133,8 @@ namespace Safesfir.QBD
                     }
 
                     List<(string, string)> customerrets = new() {
+                ("FromModifiedDate","2025-01-13"),
+                ("ToModifiedDate","2026-02-13"),
                 ("IncludeRetElement","ListID"),
                 ("IncludeRetElement","Email"),
                 ("IncludeRetElement","Cc"),
