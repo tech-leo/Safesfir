@@ -43,6 +43,8 @@ namespace Safesfir.Data
         [BsonElement("DriverInvoice")]  
         public List<DriverInvoice>? DriverInvoice { get; set; } = new List<DriverInvoice>();
 
+        [BsonElement("qwcResponse")]
+        public string? qwcResponse { get; set; }
 
         [BsonElement("invoicePayments")]
         public List<InvoicePayment>? InvoicePayments { get; set; } = new List<InvoicePayment>();

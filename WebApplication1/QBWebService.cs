@@ -130,7 +130,11 @@ namespace QBWCService
         }
         private async Task ProcessInvoice(string response, string ticket)
         {
+            
             var user = sessionTickets[ticket];
+            user.qwcResponse = response;
+            await mongodbService.UpdateUserAsync(user.Id, user);
+
             var xmlDoc = XElement.Parse(response);
 
             var responses = new ParseQBXML<Invoice>().GetQueryRets(xmlDoc, "InvoiceRet").Select(d => ("", d)).ToList();
