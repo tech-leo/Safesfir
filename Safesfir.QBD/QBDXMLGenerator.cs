@@ -86,6 +86,7 @@ namespace Safesfir.QBD
 
                     }
                     List<(string, string)> invoicerets = new() {
+                //("PaidStatus","NotPaidOnly"),
                 ("IncludeLineItems","true"),
                 ("IncludeRetElement","InvoiceLineRet"),
                 ("IncludeRetElement","TxnID"),
@@ -134,6 +135,7 @@ namespace Safesfir.QBD
                     }
 
                     List<(string, string)> customerrets = new() {
+                ("ActiveStatus","ActiveOnly"),
                 ("IncludeRetElement","ListID"),
                 ("IncludeRetElement","Email"),
                 ("IncludeRetElement","Cc"),
