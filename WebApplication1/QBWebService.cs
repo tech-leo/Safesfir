@@ -348,11 +348,33 @@ namespace QBWCService
                             if (addableDriverInvoices?.Count > 0)
                             {
                                 driver.DriverInvoice.AddRange(addableDriverInvoices);
+                                var newids= addableDriverInvoices.Select(o => o.Id).ToList();
+                                var drivers = (await mongodbService.GetDriversAsync()).Where(p => p.Id != driver.Id);
+                                if (drivers.Any(p => p.DriverInvoice?.Any(m => newids.Contains(m.Id)) == true))
+                                {
+                                    var dr = drivers.FirstOrDefault(p => p.DriverInvoice?.Any(m => newids.Contains(m.Id)) == true);
+                                    if (dr != null)
+                                    {
+                                        dr.DriverInvoice = dr.DriverInvoice.Where(m => !newids.Contains(m.Id)).ToList();
+                                        await mongodbService.UpdateUserAsync(dr.Id, dr);
+                                    }
+                                }
                             }
 
                             if (addableinvoices?.Count > 0)
                             {
                                 driver.Invoices.AddRange(addableinvoices);
+                                var newids = addableinvoices.Select(o => o.Id).ToList();
+                                var drivers = (await mongodbService.GetDriversAsync()).Where(p => p.Id != driver.Id);
+                                if (drivers.Any(p => p.Invoices?.Any(m => newids.Contains(m.Id)) == true))
+                                {
+                                    var dr = drivers.FirstOrDefault(p => p.Invoices?.Any(m => newids.Contains(m.Id)) == true);
+                                    if (dr != null)
+                                    {
+                                        dr.Invoices = dr.Invoices.Where(m => !newids.Contains(m.Id)).ToList();
+                                        await mongodbService.UpdateUserAsync(dr.Id, dr);
+                                    }
+                                }
                             }
                             await mongodbService.UpdateUserAsync(driver.Id, driver);
                         }
