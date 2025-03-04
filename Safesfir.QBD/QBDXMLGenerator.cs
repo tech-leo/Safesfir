@@ -117,10 +117,10 @@ namespace Safesfir.QBD
                     {
                         XmlElement mdateAddRqChild = inputXMLDoc.CreateElement("ModifiedDateRangeFilter");
                         XmlElement startdateAddRqChild = inputXMLDoc.CreateElement("FromModifiedDate");
-                        startdateAddRqChild.InnerText = DateTime.UtcNow.AddDays(-2).ToString("yyyy-MM-dd"); 
+                        startdateAddRqChild.InnerText = DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-dd"); 
                         mdateAddRqChild.AppendChild(startdateAddRqChild);
                         XmlElement enddateAddRqChild = inputXMLDoc.CreateElement("ToModifiedDate");
-                        enddateAddRqChild.InnerText = DateTime.UtcNow.AddDays(2).ToString("yyyy-MM-dd");
+                        enddateAddRqChild.InnerText = DateTime.UtcNow.AddDays(1).ToString("yyyy-MM-dd");
                         mdateAddRqChild.AppendChild(enddateAddRqChild);
 
                         custAddRq.AppendChild(mdateAddRqChild);
@@ -134,8 +134,6 @@ namespace Safesfir.QBD
                     }
 
                     List<(string, string)> customerrets = new() {
-                ////("FromModifiedDate",DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-dd")),
-                ////("ToModifiedDate",DateTime.UtcNow.AddDays(2).ToString("yyyy-MM-dd")),
                 ("IncludeRetElement","ListID"),
                 ("IncludeRetElement","Email"),
                 ("IncludeRetElement","Cc"),
