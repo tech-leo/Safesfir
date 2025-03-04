@@ -61,11 +61,11 @@ namespace Safesfir.Data
 
                             table.Cell().BorderLeft(1).BorderRight(1).Padding(2).Text(invoice.CustomerName).FontSize(10);
                             table.Cell().BorderLeft(1).Padding(2).Text(invoice.CustomerShippingAddressLine1).FontSize(10);
-                            table.Cell().Border(1).Padding(2).Text($"Date: {invoice.InvoiceDate:yyyy-MM-dd}").FontSize(10);
+                            table.Cell().Border(1).Padding(2).Text($"Date: {invoice.InvoiceDate:MM/dd/yyyy}").FontSize(10);
 
                             table.Cell().BorderLeft(1).Padding(1).Padding(2).Text(invoice.CustomerBillingAddressLine1).FontSize(10);
                             table.Cell().BorderLeft(1).BorderRight(1).Padding(2).Text(invoice.CustomerShippingAddressLine2).FontSize(10);
-                            table.Cell().Border(1).Padding(2).Text(invoice.DueDate != null ? $"Due Date: {invoice.DueDate:yyyy-MM-dd}" : "").FontSize(10);
+                            table.Cell().Border(1).Padding(2).Text(invoice.DueDate != null ? $"Due Date: {invoice.DueDate:MM/dd/yyyy}" : "").FontSize(10);
 
                             table.Cell().BorderLeft(1).Padding(2).Text(invoice.CustomerBillingAddressLine2).FontSize(10);
                             table.Cell().BorderLeft(1).BorderRight(1).Padding(2).Text($"{invoice.CustomerShippingCity}, {invoice.CustomerShippingCountry}").FontSize(10);
@@ -73,7 +73,7 @@ namespace Safesfir.Data
 
                             table.Cell().BorderLeft(1).BorderBottom(1).Padding(2).Text($"{invoice.CustomerBillingCity}, {invoice.CustomerBillingCountry}").FontSize(10);
                             table.Cell().BorderLeft(1).BorderBottom(1).BorderRight(1).Text("");
-                            table.Cell().Border(1).Padding(2).Text($"Ship: {invoice.ShipDate}").FontSize(10);
+                            table.Cell().Border(1).Padding(2).Text(invoice.ShipDate != null ? $"Ship: {invoice.ShipDate:MM/dd/yyyy}" : "").FontSize(10);
 
                             table.Cell().Text("");
                             table.Cell().Text("");

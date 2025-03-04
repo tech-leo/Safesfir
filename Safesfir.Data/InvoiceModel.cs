@@ -25,7 +25,7 @@ namespace Safesfir.Data
         public string CustomerShippingCountry { get; set; } = "";
         public string CustomerPhoneNumber { get; set; } = "";
         public string Terms { get; set; } = "";
-        public string ShipDate { get; set; } = "";
+        public DateTime? ShipDate { get; set; } 
         public string Memo { get; set; } = "";
         public string CustomerShippingAddressLine2 { get; set; } = "";
         public List<InvoiceItem> Items { get; set; } = new();

@@ -36,27 +36,33 @@ namespace QBWCService
 //nohup dotnet Safesfir.WebService.dll --urls "http://0.0.0.0:5000"
 
             ///generate-invoice?userid=67aa5a090c1e96f3d78c88f6&id=E-1740272847
-            app.MapGet("/clear-invoice", async () =>
-            {
-                var mongodbService = new MongoDBService();
-                var users = await mongodbService.GetUsersAsync();
-                users= users.Where(o=> o.QuickBooks.Connected==true && o.QuickBooks.Type== QuickBooksType.QBWD).ToList();
-                foreach (var user in users) { 
-                    if(user.DriverInvoice!=null) 
-                    {
-                        var ids= user.DriverInvoice.Select(o=> o.Id).ToList();
-                        user.InvoicePayments = user.InvoicePayments.Where(o => !ids.Contains(o.InvoiceId)).ToList();
-                    }
-                    user.Invoices = new List<Invoice?>();
-                    user.DriverInvoice = new List<DriverInvoice>();
-                    user.QuickBooksCompany = new Company();
-                    user.QuickBooks.Connected = false;
-                    user.QuickBooks.QbwdCompany = string.Empty;
-                    await mongodbService.UpdateUserAsync(user.Id, user);
+            //app.MapGet("/drivers", async () =>
+            //{
+            //    var mongodbService = new MongoDBService();
+            //    var users = await mongodbService.GetUsersAsync();
+            //    var usersdr = users.Where(o => o.DriverInvoice?.Count > 0); 
+            //});
+            //    app.MapGet("/clear-invoice", async () =>
+            //{
+            //    var mongodbService = new MongoDBService();
+            //    var users = await mongodbService.GetUsersAsync();
+            //    users= users.Where(o=> o.QuickBooks.Connected==true && o.QuickBooks.Type== QuickBooksType.QBWD).ToList();
+            //    foreach (var user in users) { 
+            //        if(user.DriverInvoice!=null) 
+            //        {
+            //            var ids= user.DriverInvoice.Select(o=> o.Id).ToList();
+            //            user.InvoicePayments = user.InvoicePayments.Where(o => !ids.Contains(o.InvoiceId)).ToList();
+            //        }
+            //        user.Invoices = new List<Invoice?>();
+            //        user.DriverInvoice = new List<DriverInvoice>();
+            //        user.QuickBooksCompany = new Company();
+            //        user.QuickBooks.Connected = false;
+            //        user.QuickBooks.QbwdCompany = string.Empty;
+            //        await mongodbService.UpdateUserAsync(user.Id, user);
 
-                }
-                return Results.Text($"Cleared Invoices of {users?.Count} users");
-            });
+            //    }
+            //    return Results.Text($"Cleared Invoices of {users?.Count} users");
+            //});
             app.MapGet("/generate-invoice", async (string userid, string id) =>
             
             {
@@ -88,8 +94,7 @@ namespace QBWCService
                     Memo = builder.Configuration["Memo"],
                     Terms = invoice.TermsRef?.FullName,
                         Via = invoice.ShipMethodRef?.FullName,
-                    ShipDate = invoice.ShipDate,
-                    
+                        ShipDate = !string.IsNullOrEmpty(invoice.ShipDate) ? DateTime.Parse(invoice.ShipDate) : null,
                         DueDate = !string.IsNullOrEmpty(invoice.DueDate) ? DateTime.Parse(invoice.DueDate) : null,
                     InvoiceDate = invoice.TxnDate ?? DateTime.UtcNow, 
                     InvoiceNumber = invoice.RefNumber
