@@ -223,26 +223,12 @@ namespace QBWCService
                                     });
                                 }
                             }
-                            var status = "Unpaid";
-
-                            if (invoice.Item2.BalanceRemaining == 0)
-                            {
-                                status = "Completed";
-                            }
-                            else if (invoice.Item2.BalanceRemaining < invoice.Item2.BalanceRemaining)
-                            {
-                                status = "Partial";
-                            }
+                            
                             if (driver.DriverInvoice.Count > 0)
                             {
                                 for (int i = 0; i < driver.DriverInvoice.Count; i++)
                                 {
-                                    driver.DriverInvoice[i].paymentDetails = driver.InvoicePayments.FirstOrDefault(o => o.InvoiceId == invoice.Item2?.TxnID);
-                                    if (driver.DriverInvoice[i].paymentDetails != null)
-                                    {
-                                        status = driver.DriverInvoice[i].paymentDetails.Status;
-                                    }
-
+                                    
                                     if (driver.DriverInvoice[i].Id == invoice.Item2?.TxnID)
                                     {
 
@@ -268,7 +254,6 @@ namespace QBWCService
                                             Terms= invoice.Item2?.TermsRef?.FullName,
                                             CustomField = cf,
                                             Memo = invoice.Item2.Memo,
-                                            status = status,
                                             TotalAmt = invoice.Item2.Subtotal,
                                             BillEmail = new EmailAddress
                                             {
@@ -298,7 +283,6 @@ namespace QBWCService
                                             Balance = invoice.Item2.BalanceRemaining,
                                             CustomField = cf,
                                             Memo = invoice.Item2.Memo,
-                                            status = status,
                                             TotalAmt = invoice.Item2.Subtotal,
                                             BillEmail = new EmailAddress
                                             {
@@ -331,7 +315,6 @@ namespace QBWCService
                                     Balance = invoice.Item2.BalanceRemaining,
                                     CustomField = cf,
                                     Memo = invoice.Item2.Memo,
-                                    status = status,
                                     TotalAmt = invoice.Item2.Subtotal,
                                     BillEmail = new EmailAddress
                                     {

@@ -86,27 +86,27 @@ namespace Safesfir.Data
                         {
                             table.ColumnsDefinition(columns =>
                             {
+                                columns.RelativeColumn();
+                                columns.RelativeColumn();
                                 columns.ConstantColumn(50);  // Smaller Quantity column
-                                columns.RelativeColumn();
-                                columns.RelativeColumn();
                                 columns.ConstantColumn(60);
                                 columns.ConstantColumn(60);
                             });
 
                             table.Header(header =>
                             {
-                                header.Cell().Border(1).Padding(1).AlignCenter().Text("Quantity").Bold().FontSize(10);
                                 header.Cell().Border(1).Padding(1).AlignCenter().Text("Item Code").Bold().FontSize(10);
                                 header.Cell().Border(1).Padding(1).AlignCenter().Text("Description").Bold().FontSize(10);
+                                header.Cell().Border(1).Padding(1).AlignCenter().Text("Quantity").Bold().FontSize(10);
                                 header.Cell().Border(1).Padding(1).AlignCenter().Text("Price Each").Bold().FontSize(10);
                                 header.Cell().Border(1).Padding(1).AlignCenter().Text("Amount").Bold().FontSize(10);
                             });
 
                             foreach (var item in invoice.Items)
                             {
-                                table.Cell().Border(1).Padding(2).AlignRight().Text(item.Quantity.ToString()).FontSize(10);
                                 table.Cell().Border(1).Padding(2).AlignLeft().Text(item.Name).FontSize(10);
                                 table.Cell().Border(1).Padding(2).AlignLeft().Text(item.Description).FontSize(10);
+                                table.Cell().Border(1).Padding(2).AlignRight().Text(item.Quantity.ToString()).FontSize(10);
                                 table.Cell().Border(1).Padding(2).AlignRight().Text($"${item.Rate:F2}").FontSize(10);
                                 table.Cell().Border(1).Padding(2).AlignRight().Text($"${(item.Quantity * item.Rate):F2}").FontSize(10);
                             }

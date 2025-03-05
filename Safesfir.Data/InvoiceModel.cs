@@ -35,7 +35,8 @@ namespace Safesfir.Data
     public class InvoiceItem
     {
         public string Name { get; set; }="";
-        public string Description { get; set; } = "Service";
+        public string Description { get; set; } = "";
+        public string UOM { get; set; } = "";
         public decimal? Quantity { get; set; } = 1;
         public decimal Rate { get; set; } = 100.00m;
     }
