@@ -206,7 +206,7 @@ namespace Safesfir.Data
         [BsonElement("Memo")]
         public string? Memo { get; set; }
 
-        [BsonElement("LinkedTxn")]
+        [BsonElement("CustomField")]
         public List<CustomField> CustomField { get; set; } = new List<CustomField>();
 
         [BsonElement("TotalAmt")]
@@ -335,6 +335,9 @@ namespace Safesfir.Data
 
         [BsonElement("Amount")]
         public decimal? Amount { get; set; }
+
+        [BsonElement("UnitOfMeasure")]
+        public decimal? UnitOfMeasure { get; set; }
     }
 
     public class ItemRef
