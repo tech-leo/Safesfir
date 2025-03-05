@@ -8,8 +8,8 @@ namespace Safesfir.Data
     public class MongoDBService
     {
         private readonly IMongoCollection<User> _users;
-        private static string _database_url= "mongodb://safesfir:Vhewdz2dbhs62WE@34.202.178.64:27017/admin";
-        private static string _database_nam = "admin";
+        private static string _database_url= "mongodb://safesfir:Vhewdz2dbhs62WE@34.202.178.64:27017/test";
+        private static string _database_nam = "test";
         private static string _database_table = "users";
         public MongoDBService()
         {
